@@ -10,7 +10,7 @@
 #define key (key_t)1234
 int main() {
    FILE *file;
-
+   
    if ((file = fopen("salida.txt", "w")) == NULL) {
 
       printf("Error al crear el archivo\n");
@@ -38,14 +38,13 @@ int main() {
 
          /* creo el primer hijo */
          printf("Creo el primer hijo\n");
-         char *cmd[] = { "./job4c", "A", "salida.txt", (char *) 0 };
+         char *cmd[] = { "job4c", "A", "salida.txt", (char *) 0 };
 
          pid_t p = fork();
-         
          if (p == 0) {
    
             /* es el hijo, carga la imagen ejecutable que realiza la tarea */
-            if (execv("./job4c", cmd) == -1) {
+            if (execv("job4c", cmd) == -1) {
                
                printf("Error al crear el primer proceso hijo\n");
             }
@@ -55,13 +54,12 @@ int main() {
             
             /* creo el segundo proceso hijo */
             printf("Creo el segundo hijo\n");
-            char *cmd[] = { "./job4c", "B", "salida.txt", (char *) 0 };
+            char *cmd[] = { "job4c", "B", "salida.txt", (char *) 0 };
             p = fork();
-   
             if (p == 0) {
    
                /* es el segundo hijo, carga la imagen ejecutable que realiza la tarea */
-               if (execv("./job4c", cmd) == -1) {
+               if (execv("job4c", cmd) == -1) {
                
                   printf("Error al crear el segundo proceso hijo\n");
                }
@@ -71,13 +69,12 @@ int main() {
    
                /* creo el tercer proceso hijo */
                printf("Creo el tercer hijo\n");
-               char *cmd[] = { "./job4c", "C", "salida.txt", (char *) 0 };
+               char *cmd[] = { "job4c", "C", "salida.txt", (char *) 0 };
                p = fork();
-   
                if (p == 0){
    
                   /* es el tercer hijo, carga la imagen ejecutable que realiza la tarea */
-                  if (execv("./job4c", cmd) == -1) {
+                  if (execv("job4c", cmd) == -1) {
                   
                      printf("Error al crear el tercer proceso hijo\n");
                   }
@@ -87,8 +84,11 @@ int main() {
                   /* es el proceso padre */
                   /* espera que terminen todos los hijos */
                   printf("Espero a que terminen los hijos\n");
-                  wait(NULL);
-                  
+                  //
+                  wait();
+                  wait();
+                  wait();
+                  //
                   /* abre el archivo que creo al inicio */
                   if ((file = fopen("salida.txt","a+")) == NULL) {
    
@@ -98,7 +98,8 @@ int main() {
                   else {
                      
                      /* si se abrio correctamente, escribe que se finalizo la actividad y termina */
-                     fprintf(file, "Se ha finalizado la actividad");
+                     printf("Se ha finalizado la actividad\n");
+                     fprintf(file, "Se ha finalizado la actividad\n");
                      fclose(file);
                      exit(EXIT_SUCCESS);
    
