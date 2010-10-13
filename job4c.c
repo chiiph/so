@@ -50,38 +50,30 @@ int main(int argc, char *argv[]) {
    mutex = shmat(shid, 0, 0);
    ////////
    
-/*   printf("HOOOOOLLLLAAAA\n");*/
-/*   sprintf(pid, "%d", getpid());*/
-/*   strcpy(id,argv[1]);*/
+   sprintf(pid, "%d", getpid());
+   strcpy(id,argv[1]);
    
-   sprintf(message, "ID: %s , Estoy realizando mi trabajo, PID: %d\n", argv[1], getpid());
-/*   strcat(message, "ID: ");*/
-/*   strcat(message, id);*/
-/*   strcat(message, ", Estoy realizando mi trabajo, PID: ");*/
-/*   strcat(message, pid);*/
-/*   strcat(message, "\n");*/
+   strcat(message, "ID: ");
+   strcat(message, id);
+   strcat(message, ", Estoy realizando mi trabajo, PID: ");
+   strcat(message, pid);
+   strcat(message, "\n");
 
-   for(i=0; i<10; i++){
+   for(i=0; i<10000; i++){
+
    
       /* chequear si puedo escribir y escribir */
       /* aca iria el tema de los semaforos */
-      printf("Espero a tener el lock del mutex, soy el proceso %s\n", argv[1]);
-      //sem_wait(mutex);
-      if (sem_trywait(mutex) == 0){
-      printf("Tengo el lock del mutex, soy el proceso %s\n",argv[1]);
-      sleep(1);
+      //printf("Espero a tener el lock del mutex, soy el proceso %s\n", id);
+      sem_wait(mutex);
+      //printf("Tengo el lock del mutex, soy el proceso %s\n",id);
       if (write(argv[2], message) == 0) {
 
          /* Hubo un error */
-         printf("Error en el hijo %s",argv[1]);
+         printf("Error en el hijo %c",id);
          exit(EXIT_FAILURE);
 
       }
       sem_post(mutex);
-      }
-      else{
-      sleep(2);
-      printf("No obtuve el lock, soy el proceso %s\n", argv[1]);
-      }
    }
 }
