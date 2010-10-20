@@ -44,28 +44,32 @@ int main(int argc, char** argv) {
 	key_t key_msg = 8765;
 	int shmid_mutex, shmid_msg;
 	char *message;
-	sem_t *full, *empty;
+	sem_t *full1, *full2;
 	int created;
 
 	printf("Inicializando los semaforos...\t\t\t");
 	fflush(stdout);
 	// Se crea o attachea la shared memory de los mutex
-	shmid_mutex = create_or_attach(key_mutex, sizeof(full)*2, &created);
+	shmid_mutex = create_or_attach(key_mutex, sizeof(*full2)*2, &created);
 	// Accedemos al array compartido
 	void *mem = shmat(shmid_mutex, 0, 0);
-	// Sabemos que el primer elemento es el semaforo full
-	full = ((sem_t *)mem);
-	// Y el segundo el empty
-	empty = ((sem_t *)mem)+1;
+	// Sabemos que el primer elemento es el semaforo full1
+	full1 = ((sem_t *)mem);
+	// Y el segundo el full2
+	// Asignado para la escritura en el otro proceso
+	// (a este semaforo se le hara wait para leer, y al otro
+	// post para escribir)
+	full2 = ((sem_t *)mem)+sizeof(*full1)*2;
 	// Si creamos la memoria
 	if(created) {
 		// Entonces se inicializan los semaforos
-		if(sem_init(full, 1, 0) == -1) {
+		if(sem_init(full1, 1, 0) == -1) {
 			printf("ERROR: No se puede inicializar el semaforo full\n");
 			exit(1);
 		}
-		// Empty tiene valor 1 porque se mandan de a un mensaje
-		if(sem_init(empty, 1, 1) == -1) {
+		// El proceso que hace post a full2 empieza tiene valor 1 
+		// porque se mandan de a un mensaje
+		if(sem_init(full2, 1, 1) == -1) {
 			printf("ERROR: No se puede inicializar el semaforo empty\n");
 			exit(1);
 		}
@@ -81,20 +85,25 @@ int main(int argc, char** argv) {
 
 	int id;
 
+	srand(time(0));
+
 	while(1) {
 		// Seteamos un id random del mensaje
 		id = random() % 100;
 		// Esperamos que haya algun lugar vacio
-		sem_wait(empty);
-		// Se guarda el mensaje en la shmem
+		sem_wait(full2);
+		// Se guarda el mensaje nuevo en la shmem
 		sprintf(message, "(%d) Mensaje enviado por PID=%d\n", id, getpid());
 		// Se avisa que se "envio" el mensaje
 		printf("Enviado el mensaje con ID=%d por el PID=%d\n", id, getpid());
+		sleep(1);
+		printf("Leyendo mensaje...\n");
+		// Se imprime el mensaje
+		printf("%s", message);
 		// Avisamos que hay un mensaje nuevo
-		sem_post(full);
+		sem_post(full1);
 		printf("***\n");
-		// Esperamos 5 segundos para hacer mas simple la lectura del output
-		sleep(5);
+		sleep(1);
 	}
 
 	return 0;

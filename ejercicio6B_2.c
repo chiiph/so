@@ -44,28 +44,31 @@ int main(int argc, char** argv) {
 	key_t key_msg = 8765;
 	int shmid_mutex, shmid_msg;
 	char *message;
-	sem_t *full, *empty;
+	sem_t *full1, *full2;
 	int created;
 
 	printf("Inicializando los semaforos...\t\t\t");
 	fflush(stdout);
 	// Se crea o attachea la shared memory de los mutex
-	shmid_mutex = create_or_attach(key_mutex, sizeof(full)*2, &created);
+	shmid_mutex = create_or_attach(key_mutex, sizeof(*full1)*2, &created);
 	// Accedemos al array compartido
 	void *mem = shmat(shmid_mutex, 0, 0);
-	// Sabemos que el primer elemento es el semaforo full
-	full = ((sem_t *)mem);
-	// Y el segundo el empty
-	empty = ((sem_t *)mem)+1;
+	// Sabemos que el primer elemento es el semaforo full1
+	// Asignado para la escritura en el otro proceso
+	// (a este semaforo se le hara wait para leer, y al otro
+	// post para escribir)
+	full1 = ((sem_t *)mem);
+	// Y el segundo el full2
+	full2 = ((sem_t *)mem)+sizeof(*full1)*2;
 	// Si creamos la memoria
 	if(created) {
 		// Entonces se inicializan los semaforos
-		if(sem_init(full, 1, 0) == -1) {
+		if(sem_init(full1, 1, 0) == -1) {
 			printf("ERROR: No se puede inicializar el semaforo full\n");
 			exit(1);
 		}
 		// Empty tiene valor 1 porque se mandan de a un mensaje
-		if(sem_init(empty, 1, 1) == -1) {
+		if(sem_init(full2, 1, 1) == -1) {
 			printf("ERROR: No se puede inicializar el semaforo empty\n");
 			exit(1);
 		}
@@ -79,16 +82,24 @@ int main(int argc, char** argv) {
 	message = (char *)shmat(shmid_msg, 0, 0);
 	printf("[ OK ]\n");
 
+	int id;
+
 	while(1) {
+		// Seteamos un id random del mensaje
+		id = random() % 100;
 		// Comienza esperando un mensaje
-		sem_wait(full);
+		sem_wait(full1);
 		printf("Leyendo mensaje...\n");
 		// Se imprime el mensaje
 		printf("%s", message);
+		sleep(1);
+		// Se escribe el nuevo mensaje
+		sprintf(message, "(%d) Mensaje enviado por PID=%d\n", id, getpid());
+		// Se avisa que se "envio" el mensaje
+		printf("Enviado el mensaje con ID=%d por el PID=%d\n", id, getpid());
 		// Se avisa que hay un lugar vacio nuevo
-		sem_post(empty);
+		sem_post(full2);
 		printf("***\n");
-		// Esperamos 1 segundo para
 		sleep(1);
 	}
 
