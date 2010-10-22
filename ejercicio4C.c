@@ -7,106 +7,124 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 
+/* Defino la llave que voy a usar para la memoria compartida
+ * en la cual comparto el semaforo para acceder al archivo */
 #define key (key_t)1234
+
 int main() {
+
    FILE *file;
    
+   /* Creo el archivo salida.txt
+    * El modo "w" significa que se crea el archivo o se
+    * elimina todo el contenido */
    if ((file = fopen("salida.txt", "w")) == NULL) {
-
+      
+      /* Si se produjo algun error al crear el archivo el
+       * programa no puede continuar */
       printf("Error al crear el archivo\n");
       exit(EXIT_FAILURE);
+
    }
    else {
+      
+      /* Si el archivo se creo o se elimino su contenido
+       * procedo a cerrarlo ya que son los procesos hijos los
+       * que lo van a usar */
       fclose(file);
 
-      //////////
+      /* Una vez creado el archivo tengo que crear el segmento
+       * de memoria compartida para el semaforo que me va a 
+       * brindar la exclusion mutua entre los procesos hijos */
       int shid;
       sem_t *mutex;
       
-      shid = shmget(key, sizeof(mutex), (IPC_CREAT|0666));
-      mutex = shmat(shid, 0, 0);
+      /* Intento crear la memoria compartida para el semaforo
+       * En caso de que este creada intento accederla
+       * Si fallan ambos intentos el programa reporta el error */
+      if ((shid = shmget(key, sizeof(mutex), IPC_CREAT| (SHM_R | SHM_W))) < 0) {
 
-      if (sem_init(mutex,1,1) == -1) {
-         
-         /* error al inicializar el semaforo */
-         printf("Error al inicializar el semaforo\n");
-         exit(EXIT_FAILURE);
+         if ((shid = shmget(key, sizeof(mutex), (SHM_R | SHM_W))) < 0) {
 
+            printf("Error al crear o acceder la memoria compartida\n");
+            exit(EXIT_FAILURE);
+         }
       }
 
+      /* Asigno el espacio de memoria creado anteriormente al espacio
+       * de memoria del mutex */
+      mutex = shmat(shid, 0, 0);
+
+      /* Inicializo el mutex
+       * Si el mutex se inicializa correctamente se procede a crear
+       * los hijos
+       * En caso de fallar la inicializacion el programa reporta
+       * el error */
+      if (sem_init(mutex,1,1) == -1) {
+         
+         printf("Error al inicializar el semaforo\n");
+         exit(EXIT_FAILURE);
+      }
       else {
 
-         /* creo el primer hijo */
-         printf("Creo el primer hijo\n");
-         char *cmd[] = { "job4c", "A", "salida.txt", (char *) 0 };
+         char *ids[3] = { "A", "B", "C" };
+         char *cmd[4]; 
+         int i;
+         pid_t p;
+         
+         cmd[0] = "job4c";
+         cmd[2] = "salida.txt";
+         cmd[3] = (char *) 0;
+         
+         /* El programa itera 3 veces, ya que crea 3 hijos */
+         for (i=0; i<3; i++) { 
 
-         pid_t p = fork();
-         if (p == 0) {
-   
-            /* es el hijo, carga la imagen ejecutable que realiza la tarea */
-            if (execv("job4c", cmd) == -1) {
-               
-               printf("Error al crear el primer proceso hijo\n");
-            }
-   
-         }
-         else {
+            cmd[1] = (char *) ids[i];
             
-            /* creo el segundo proceso hijo */
-            printf("Creo el segundo hijo\n");
-            char *cmd[] = { "job4c", "B", "salida.txt", (char *) 0 };
-            p = fork();
-            if (p == 0) {
-   
-               /* es el segundo hijo, carga la imagen ejecutable que realiza la tarea */
+            /* Creo el proceso i, dependiendo de la iteracion en
+             * la que se encuentre
+             * No uso el else cuando pregunto si es el padre o el hijo
+             * ya que el hijo carga una imagen ejecutable sobreescribiendo
+             * la actual */
+            printf("(%d): Creo el Hijo %d\n", getpid(), i+1);
+            if (fork() == 0) {
+
                if (execv("job4c", cmd) == -1) {
-               
-                  printf("Error al crear el segundo proceso hijo\n");
-               }
-   
-            }
-            else {
-   
-               /* creo el tercer proceso hijo */
-               printf("Creo el tercer hijo\n");
-               char *cmd[] = { "job4c", "C", "salida.txt", (char *) 0 };
-               p = fork();
-               if (p == 0){
-   
-                  /* es el tercer hijo, carga la imagen ejecutable que realiza la tarea */
-                  if (execv("job4c", cmd) == -1) {
-                  
-                     printf("Error al crear el tercer proceso hijo\n");
-                  }
-   
-               }
-               else {
-                  /* es el proceso padre */
-                  /* espera que terminen todos los hijos */
-                  printf("Espero a que terminen los hijos\n");
-                  //
-                  wait();
-                  wait();
-                  wait();
-                  //
-                  /* abre el archivo que creo al inicio */
-                  if ((file = fopen("salida.txt","a+")) == NULL) {
-   
-                     printf("Error al intentar abrir el archivo\n");
-                     exit(EXIT_FAILURE);
-                  }
-                  else {
-                     
-                     /* si se abrio correctamente, escribe que se finalizo la actividad y termina */
-                     printf("Se ha finalizado la actividad\n");
-                     fprintf(file, "Se ha finalizado la actividad\n");
-                     fclose(file);
-                     exit(EXIT_SUCCESS);
-   
-                  }
+
+                  printf("Error al crear el proceso hijo\n");
+                  exit(EXIT_FAILURE);
                }
             }
+
+            /* En caso de no ser el hijo (pid != 0) el padre volvera a 
+             * iterar creando los hijos restantes.
+             * El hijo nunca accedera a este codigo porque reemplazo la
+             * imagen ejecutable por la propia */
          }
+         
+         /* Una vez creados los 3 hijos el padre procede a esperar
+          * a que estos terminen */
+         printf("(%d): Espero a que terminen los procesos hijos\n", getpid());
+
+         wait();
+         wait();
+         wait();
+
+         /* Una vez que sus hijos terminan abre el archivo "salida.txt"
+          * para agregar la ultima linea, indicando que se finalizo la
+          * actividad */
+         if ((file = fopen("salida.txt", "a+")) == NULL) {
+            
+            printf("Error al abrir el archivo\n");
+            exit(EXIT_FAILURE);
+         }
+
+         fprintf(file, "Se ha finalizado la actividad\n");
+         printf("(%d): Se ha finalizado la actividad\n", getpid());
+
+         fclose(file);
+         
+         exit(EXIT_SUCCESS);
       }
    }
 }

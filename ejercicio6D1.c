@@ -15,7 +15,7 @@ int main(){
    
    msg_t msg;
 
-   msg.mtype = 3;
+   msg.mtype = 1;
    strcpy(msg.mtext,"PING");
 
    int stat, msqid;
@@ -23,7 +23,6 @@ int main(){
    /* Se intenta crear el espacio para la cola de mensajes, 
     * si ya esta creada, se hace el attach a la misma 
     * */
-
    printf("(%d) Creating or accessing shared memory segment\n", getpid());
 
    if ((msqid = msgget(1234, (0666 | IPC_CREAT | IPC_EXCL))) < 0){

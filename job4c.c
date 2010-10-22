@@ -8,12 +8,14 @@
 #include <sys/shm.h>
 
 #define key (key_t)1234
+
 /* Escribe en el archivo filename, el mensaje message */
 /* Devuelve 1 si la escritura fue exitosa, 0 si hubo algun error */
 int write(char  *filename, char *message) {
    
    FILE *file;
    
+   /* Intento abrir el archivo para escribir en el */
    if ((file = fopen(filename, "a+")) == NULL) {
       
       /* No se pudo abrir el archivo */
@@ -23,8 +25,6 @@ int write(char  *filename, char *message) {
    else {
 
       /* Imprimo el estado por pantalla y en el archivo designado */
-      //printf("ID: %c, Estoy realizando mi trabajo, PID: %d\n", argv[1], getpid());
-      //fprintf("ID: %c, Estoy realizando mi trabajo, PID: %d\n", argv[1], getpid());
       printf(message);
       fprintf(file, message);
 
@@ -38,42 +38,52 @@ int write(char  *filename, char *message) {
 int main(int argc, char *argv[]) {
    
    FILE *file;
-   int i;
+   int shid, i;
    char id[1];
    char pid[10];
    char message[45];
-
-   ////////
-   int shid;
    sem_t *mutex;
-   shid = shmget(key, sizeof(mutex), 0);
+
+   /* Intento acceder a la memoria compartida creada por el
+    * proceso padre */
+   if ((shid = shmget(key, sizeof(mutex), (SHM_R | SHM_W))) <0) {
+      
+      printf("Error al acceder la memoria compartida\n");
+      exit(EXIT_FAILURE);
+   }
+
+   /* Asigno el espacio de memoria creado anteriormente al espacio
+    * de memoria del mutex */
    mutex = shmat(shid, 0, 0);
-   ////////
    
+   /* Creo el mensaje que voy a mostrar por consola y guardar en el
+    * archivo */
    sprintf(pid, "%d", getpid());
    strcpy(id,argv[1]);
-   
    strcat(message, "ID: ");
    strcat(message, id);
    strcat(message, ", Estoy realizando mi trabajo, PID: ");
    strcat(message, pid);
    strcat(message, "\n");
 
+   /* Realizo las 10.000 iteraciones, escribiendo por pantalla y
+    * en el archivo lo que estoy haciendo */
    for(i=0; i<10000; i++){
 
-   
-      /* chequear si puedo escribir y escribir */
-      /* aca iria el tema de los semaforos */
-      //printf("Espero a tener el lock del mutex, soy el proceso %s\n", id);
+      /* Antes de poder escribir en el archivo me aseguro que no haya
+       * proceso escribiendo en el para no generar inconsistencias */
       sem_wait(mutex);
-      //printf("Tengo el lock del mutex, soy el proceso %s\n",id);
+
       if (write(argv[2], message) == 0) {
 
-         /* Hubo un error */
          printf("Error en el hijo %c",id);
          exit(EXIT_FAILURE);
 
       }
+
+      /* Cuando termino de escribir en el archivo libero el mutex
+       * indicandole al resto de los procesos que el archivo esta
+       * libre */
       sem_post(mutex);
    }
 }

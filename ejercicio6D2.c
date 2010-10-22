@@ -26,7 +26,7 @@ int main(){
    }
    printf("(%d) Shared Memory accessed\n",getpid()); 
    
-   stat = msgrcv(msqid, &msg, sizeof(msg) - sizeof(long), 3, 0); 
+   stat = msgrcv(msqid, &msg, sizeof(msg) - sizeof(long), 1, 0); 
    if (stat < 0){
       printf("Error receiving message\n");
       exit(EXIT_FAILURE);
