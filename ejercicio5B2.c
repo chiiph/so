@@ -37,7 +37,7 @@ void *printid(void *id) {
       /* Espero el semaforo que me corresponde */
       sem_wait(&(sem[i]));
 
-      /* Imprimmo la letra identificatoria del hilo */
+      /* Imprimo la letra identificatoria del hilo */
       printf("%c", ch);
       fflush(NULL);
 
