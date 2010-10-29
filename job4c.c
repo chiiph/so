@@ -25,8 +25,8 @@ int write(char  *filename, char *message) {
    else {
 
       /* Imprimo el estado por pantalla y en el archivo designado */
-      printf(message);
-      fprintf(file, message);
+      printf("%s", message);
+      fprintf(file, "%s", message);
 
       fclose(file);
 
@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
 
       if (write(argv[2], message) == 0) {
 
-         printf("Error en el hijo %c",id);
+         printf("Error en el hijo %s",id);
          exit(EXIT_FAILURE);
 
       }

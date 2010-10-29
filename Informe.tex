@@ -99,25 +99,32 @@ showstringspaces=false}
 		
 		\subsubsection{Modo de uso}
 		
-		Dentro del directorio donde se compil\'o el ejercicio, para ejecutarlo se podr\'a hacerlo con el comando ``./ejercicio4A''.
-		
-		La aplicaci\'on escribe dentro de un archivo llamado ``output\_ejercicio4A'', en \'el cada proceso escribe un mensaje identific\'andose a s\'i mismo.
+		Dentro del directorio donde se compil\'o el ejercicio, para ejecutarlo se podr\'a hacerlo con el comando ``./ejercicio4B''.
 		
 		El orden de finalizaci\'on de cada proceso es completamente aleatorio, ya que en el c\'odigo no se utiliza expl\'icitamente ninguna funci\'on para que un proceso espere a otro.
 		
 		\subsubsection{Algoritmo}
 		\begin{lstlisting}
-	Inicializar mutex en 1;
-	fork();
-	if(es_hijo) {
-		Escribir en el archivo la identidad del primer hijo
-	} else {
-		fork();
-		if(es_segundo_hijo)
-			Escribir en el archivo la identidad del segundo hijo
-		else
-			Escribir en el archivo la identidad del padre
-	}
+		
 		\end{lstlisting}
+		
+	\subsection{Ejercicio 4C}
+		\subsubsection{Compilaci\'on}
+		
+		Se puede compilar este ejercicio en particular con el comando ``make ejercicio4C''. 
+		
+		En este caso no solo se genera un ejecutable llamado ejercicio4C, sino que tambi\'en se genera uno llamado ``job4c'' que ser\'a utilizado por el primero y no deber\'a ser llamado expl\'icitamente.
+		
+		\subsubsection{Modo de uso}
+		
+		Dentro del directorio donde se compil\'o el ejercicio, para ejecutarlo se podr\'a hacerlo con el comando ``./ejercicio4C''.
+		
+		La aplicaci\'on escribe dentro de un archivo llamado ``salida.txt'', en el que se operar\'a como se especific\'o en el enunciado del ejercicio.
+		
+		El orden de finalizaci\'on de cada proceso hijo es completamente aleatorio, pero el proceso padre, al utilizar la funci\'on wait, espera a que terminen sus hijos antes de finalizar.
+		
+		\subsubsection{Algoritmo}
+		\begin{lstlisting}
 	
+		\end{lstlisting}
 \end{document}

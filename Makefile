@@ -9,7 +9,7 @@ ejercicio4A: ejercicio4A.c
 ejercicio4B: ejercicio4B.c
 	$(CC) -o ejercicio4B ejercicio4B.c $(LIBS)
 
-ejercicio4C: ejercicio4C.c
+ejercicio4C: ejercicio4C.c job4c.c
 	$(CC) -o ejercicio4C ejercicio4C.c $(LIBS)
 	$(CC) -o job4c job4c.c $(LIBS)
 
