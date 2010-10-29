@@ -97,12 +97,16 @@ int main(int argc, char** argv) {
 		// Se avisa que se "envio" el mensaje
 		printf("Enviado el mensaje con ID=%d por el PID=%d\n", id, getpid());
 		sleep(1);
+		// Avisamos que hay un mensaje nuevo
+		sem_post(full1);
+		// Esperamos que haya un mensaje en el buffer para nosotros
+		sem_wait(full2);
 		printf("Leyendo mensaje...\n");
 		// Se imprime el mensaje
 		printf("%s", message);
-		// Avisamos que hay un mensaje nuevo
-		sem_post(full1);
 		printf("***\n");
+		sem_post(full2);
+
 		sleep(1);
 	}
 

@@ -80,17 +80,17 @@ showstringspaces=false}
 		
 		\subsubsection{Algoritmo}
 		\begin{lstlisting}
-	Inicializar mutex en 1;
+Inicializar mutex en 1;
+fork();
+if(es_hijo) {
+	Escribir en el archivo la identidad del primer hijo
+} else {
 	fork();
-	if(es_hijo) {
-		Escribir en el archivo la identidad del primer hijo
-	} else {
-		fork();
-		if(es_segundo_hijo)
-			Escribir en el archivo la identidad del segundo hijo
-		else
-			Escribir en el archivo la identidad del padre
-	}
+	if(es_segundo_hijo)
+		Escribir en el archivo la identidad del segundo hijo
+	else
+		Escribir en el archivo la identidad del padre
+}
 		\end{lstlisting}
 \subsection{Ejercicio 4B}
 		\subsubsection{Compilaci\'on}
@@ -126,5 +126,106 @@ showstringspaces=false}
 		\subsubsection{Algoritmo}
 		\begin{lstlisting}
 	
+		\end{lstlisting}
+	\subsection{Ejercicio 5A}
+		\subsubsection{Compilaci\'on}
+		
+		Se puede compilar este ejercicio en particular con el comando ``make ejercicio5A''.
+		
+		ACLARACI\'ON: Como ya se charl\'o con ayudantes de la c\'atedra, si bien el c\'odigo imprime 10000 lineas con cada letra, como se especifica, por alguna raz\'on que el personal de c\'atedra tampoco supo responder, algunas letras se imprimen un n\'umero arbitrario m\'as de veces.
+		
+		\subsubsection{Modo de uso}
+		
+		Dentro del directorio donde se compil\'o el ejercicio, para ejecutarlo se podr\'a hacerlo con el comando ``./ejercicio5A''.
+		
+		\subsubsection{Algoritmo}
+		\begin{lstlisting}
+void main() {
+	Crear los 5 threads para que utilicen la funcion "thread()";
+	fork();
+	if(es_proceso_hijo)
+		Imprimir un mensaje indicando la creacion existosa;
+	else
+		Esperar a que terminen los threads;
+}
+
+void thread(letra) {
+	Imprimir 10000 veces letra;
+}
+		\end{lstlisting}
+	\subsection{Ejercicio 5B}
+		\subsubsection{Compilaci\'on}
+		
+		Se puede compilar este ejercicio en particular con el comando ``make ejercicio5B''.
+		
+		Se generan los binarios: ejercicio5B1, ejercicio5B2, ejercicio5B3, que corresponden a cada inciso del ejercicio.
+		
+		\subsubsection{Modo de uso}
+		
+		Dentro del directorio donde se compil\'o el ejercicio, para ejecutarlo se podr\'a hacerlo con el comando ``./ejercicio5B1'', o ``./ejercicio5B2'', ``./ejercicio5B3''.
+		
+		\subsubsection{Algoritmo}
+		\begin{lstlisting}
+
+		\end{lstlisting}
+	\subsection{Ejercicio 6A}
+		
+		\subsubsection{shmget}
+			
+			\begin{lstlisting}
+			int shmget(key_t key, size_t size, int shmflg);
+			\end{lstlisting}
+			
+			Crea un nuevo segmento de memoria compartida con la key y el tama\~no que se especifica por par\'ametro.
+			
+		\subsubsection{shmat}
+			
+			\begin{lstlisting}
+			void *shmat(int shmid, const void *shmaddr, int shmflg);
+			\end{lstlisting}
+			
+			Se enlaza al segmento de memoria compartida identificado por el shmid que se pasa por par\'ametro.
+			
+		\subsubsection{shmdt}
+			
+			\begin{lstlisting}
+			int shmdt(const void *shmaddr);
+			\end{lstlisting}
+			
+			Desenlaza el segmento de memoria compartida ubicado en la direcci\'on especificada en el par\'ametro shmaddr.
+		
+	\subsection{Ejercicio 6B}
+		\subsubsection{Compilaci\'on}
+		
+		Se puede compilar este ejercicio en particular con el comando ``make ejercicio6B''.
+		
+		Se generan los binarios: ejercicio6B y ejercicio6B_2.
+		
+		\subsubsection{Modo de uso}
+		
+		Dentro del directorio donde se compil\'o el ejercicio, para ejecutarlo se podr\'a hacerlo con el comando ``./ejercicio6B'', y luego en otra instancia de la consola en mismo directorio ``./ejercicio6B_2''. No importa el orden en que se ejecuten, ejercicio6B escribe primero un mensaje y luego espera la respuesta, y ejercicio6B_2 primero lee un mensaje y luego escribe la respuesta. Este comportamiento se realiza infinitas veces.
+		
+		Para comprobar que el env\'io de mensajes se realiza correctamente estos poseen un id aleatorio para identificarlos. Por otro lado, para facilitar la lectura del output por pantalla, se realizan sleeps entre cada env\'io de mensaje.
+		
+		\subsubsection{Algoritmo}
+		
+		NOTA: Como ambos programas funcionan de la misma forma, simplemente se invierte el comportamiento inicial en el env\'io de mensajes, solo se presenta el algoritmo para ejercicio6B.c, y simplemente invirtiendo el orden en que se envia y reciben mensajes se puede obtener el algoritmo de ejercicio6B_2.
+		
+		\begin{lstlisting}
+Se crea el segmento de memoria compartida para los semaforos utilizados o
+se enlaza al mismo si ya esta creado;
+
+Si fue creado, se inicializan los semaforos;
+
+Se crea el segmento de memoria compartida para el buffer de mensajes o
+se enlaza al mismo si ya esta creado;
+
+while(1) {
+	id = numero random;
+	Se espera a que el otro proceso haya leido el mensaje enviado;
+	Se envia el mensaje con el id aleatorio;
+	Se espera a que el otro proceso responda el mensaje;
+	Se lee la respuesta;
+}
 		\end{lstlisting}
 \end{document}

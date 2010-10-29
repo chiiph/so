@@ -10,8 +10,8 @@ ejercicio4B: ejercicio4B.c
 	$(CC) -o ejercicio4B ejercicio4B.c $(LIBS)
 
 ejercicio4C: ejercicio4C.c job4c.c
-	$(CC) -o ejercicio4C ejercicio4C.c $(LIBS)
-	$(CC) -o job4c job4c.c $(LIBS)
+	$(CC) -o ejercicio4C ejercicio4C.c $(LIBS) -std=c99
+	$(CC) -o job4c job4c.c $(LIBS) -std=c99
 
 ejercicio5A: ejercicio5A.c
 	$(CC) -o ejercicio5A ejercicio5A.c $(LIBS) -std=c99
