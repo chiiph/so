@@ -1,0 +1,15 @@
+Las funciones basicas utilizadas son
+   1. msgget()
+      int msgget(key_t key, int msgflg);
+
+      Este system call devuelve el identificador de la cola de mensajes asociado al argumento key. Una nueva cola de mensajes se crea si key tiene el valor IPC_PRIVATE o key no es IPC_PRIVATE, no existe una cola de mensajes con llave key e IPC_CREAT es especificado en msgflag.
+
+   2. msgsnd()
+      int msgsnd(int msqid, const void *msgp, size_t msgsz, int msgflg);
+
+      Este system call se utiliza para enviar un mensaje a la cola de mensajes. El proceso invocador tiene que tener permisos de escritura en la cola de mensajes para poder enviarlo. Este anexa una copia del mensaje apuntado por msgp a la cola identificada por msqid.
+
+   3. msgrcv()
+      ssize_t msgrcv(int msqid, void *msgp, size_t msgsz, long msgtyp, int msgflg);
+
+      Este system call se utiliza para leer mensajes de la cola de mensajes. El proceso invocador tiene que tener permisos de lectura en la cola de mensajes para poder leerlo. Este anexa el mensaje al buffer msgp el mensaje leido de la cola de mensajes identificada por msqid. El argumento msgtyp especifica el tipo de mensaje que se lee.

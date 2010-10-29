@@ -1,0 +1,23 @@
+Ambos programas intentan crear o acceder a una cola de mensajes compartida
+y a un espacio de memoria compartido para los semaforos.
+La cola de mensajes se supone circular, es decir, el productor produce los
+mensajes en 1,2,... BUFFSIZE,1,2,... y el consumidor consume los mensajes en ese
+mismo orden.
+
+ejercicio6E2_productor
+Enviar un mensaje que confirme la inicializacion
+for(){
+   Esperar el semaforo que indica cuanto espacio libre hay en la cola de mensajes
+   Produzco un mensaje
+   Aumento el semaforo que representa cuantos mensajes hay en la cola de mensajes
+   Aumento el indice de escritura en 1 y calculando este valor modulo BUFFSIZE  + 1 (para evitar el 0)
+}
+
+ejercicio6E2_consumidor
+Esperar un mensaje que confirme la inicializacion
+for(){
+   Esperar el semaforo que indica cuantos mensajes hay en la cola de mensajes
+   Consumo el mensaje
+   Aumento el semaforo que representa cuanto espacio libre hay en la cola de mensajes
+   Aumento el indice de lectura en 1 y calculando este valor modulo BUFFSIZE + 1 (para evitar el 0)
+}

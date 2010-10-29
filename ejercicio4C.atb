@@ -1,0 +1,24 @@
+ejercicio4C
+Crear el archivo "salida.txt" o eliminar su contenido
+Crear la memoria compartida
+Asignar el espacio de memoria al semaforo
+Inicializar el semaforo en 1
+for(i=0 hasta i=2){
+   Creo un hijo
+   if (es_el_hijo){
+      Reemplazo la imagen ejecutable actual por la de job4c
+   }
+}
+Esperar a que terminen los hijos
+Abrir el archivo para escritura sin borrar el contenido
+Escribir en el mismo que se finalizo la actividad
+
+
+job4c
+Acceder al espacio de memoria compartida
+Asignar el espacio de memoria al mutex
+for(i=0 hasta i=9999){
+   Esperar el semaforo compartido
+   Escribir en el archivo y en la consola
+   Liberar el semaforo compartido
+}

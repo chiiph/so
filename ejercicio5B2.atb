@@ -1,0 +1,18 @@
+/* Se utiliza una variable que define el turno en el que se encuentra la
+   secuencia.
+   turno = 1 -> Tengo que imprimir 2 veces (B o C)
+   turno = 0 -> (B o C) ya se imprimio una vez, tengo que imprimirla una
+                vez mas y continuar con la secuencia normalmente */
+Proceso
+Definir un arreglo de 4 semaforos {A,B,D,E} tratada como cola circular
+Inicializar los semaforos de la siguiente manera A=1, B=0, D=0, E=0
+Crear los 5 hilos asignandoles la misma funcion
+
+
+Hilos
+/* B y C comparten semaforo ya que compiten por imprimir */
+for(){
+   Esperar mi semaforo
+   Imprimir mi letra
+   Dependiendo del turno en el que me encuentre liberar el semaforo
+}
