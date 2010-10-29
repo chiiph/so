@@ -1,0 +1,123 @@
+\documentclass[a4paper,oneside]{report}
+\usepackage[spanish]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{fullpage}
+\usepackage{listings}
+\usepackage{gmverb}
+\usepackage[colorlinks=true,urlcolor=black,linkcolor=black]{hyperref}%
+\usepackage{listings}
+
+\setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+
+\lstset{language=Java,
+frame=single,
+basicstyle=\footnotesize,
+tabsize=3,
+showtabs=false,
+showspaces=false,
+showstringspaces=false}
+
+\lstset{breaklines}
+
+\title{Sistemas Operativos\\Proyecto 1}
+
+\author{Fernando Sisul (LU: 81236)\and Tomás Touceda (LU: 84024)}
+
+\date{29 de Octubre de 2010}
+
+\begin{document}
+\lstset{frame=single}
+\maketitle
+
+\tableofcontents
+
+\chapter{Preguntas te\'oricas}
+\section{Windows}
+	\subsection{Creaci\'on de procesos}
+	
+	Los procesos en Windows se crean utilizando la funci\'on CreateProcess, a esta se le pasa en los par\'ametros el nombre del binario a ejecutar en el nuevo proceso junto con diferentes flags para especificar distintas caracter\'isticas del mismo, como atributos del proceso, atributos de los hilos que crea el proceso, el entorno del proceso, y el directorio actual donde se encontrar\'a el proceso. La llamada devuelve en el \'ultimo par\'ametro un puntero a una estructura que contiene informaci\'on del proceso creado, y retorna cero si falla, o un n\'umero distinto de cero en caso contrario.
+	
+	La diferencia m\'as grande con la creaci\'on de procesos en sistemas UNIX es que en Windows se utiliza una funci\'on wrapper de las system calls espec\'ificas (CreateProcess) y en sistemas UNIX se deben ejecutar una serie definida de llamadas al sistema. Esta diferencia hace que la creaci\'on de procesos en Windows sea transparente a cualquier cambio en la definici\'on de las system calls que suceda entre versiones del sistema operativo.
+	
+	\subsection{Visualizaci\'on de procesos}
+	
+	Los procesos en los sistemas Windows se pueden visualizar utilizando el Administrador de tareas que provee el sistema, este se activa con las teclas Ctrl+Alt+Del, y permite manipular de forma b\'asica todos los procesos que se encuentren ejecut\'andose al momento en que se lanza el Administrador de tareas.
+	
+	\subsection{Sysinternals Process Monitor}
+	
+	La aplicaci\'on Process Monitor es una herramienta de monitoreo avanzada para Windows que muestra en tiempo real la actividad del sistema de archivos, el registro del sistema y de los procesos e hilos en ejecuci\'on. Esta herramienta provee funcionalidades para visualizar informaci\'on de procesos, los stacks de cada hilo, realizar logs en archivos.
+	
+	\subsection{Sysinternals Process Explorer}
+	
+	Process Explorer muestra informaci\'on acerca de los recursos y bibliotecas din\'amicas que utilizan los distintos procesos en ejecuci\'on, adem\'as tambi\'en muestra los archivos que cada proceso ha abierto.
+	
+\section{Linux}
+	\subsection{Directorio /proc}
+	\subsection{Creaci\'on y manipulaci\'on de procesos}
+	\subsection{System calls fork y exec}
+\chapter{Algoritmos}
+\section{Consideraciones iniciales}
+	
+	Todos los ejercicios se compilan con un mismo Makefile, para compilar alg\'un ejercicio en particular se deber\'an utilizar comandos del estilo ``make ejercicio4A'', como se especificar\'a en cada ejercicio particular.
+	
+	Para compilar todos los ejercicios se puede utilizar ``make all'' o simplemente ``make''.
+	
+	Para ``limpiar'' el directorio se puede utilizar el comando ``make clean''.
+	
+\section{Creaci\'on de procesos}
+	\subsection{Ejercicio 4A}
+		\subsubsection{Compilaci\'on}
+		
+		Se puede compilar este ejercicio en particular con el comando ``make ejercicio4A''.
+		
+		\subsubsection{Modo de uso}
+		
+		Dentro del directorio donde se compil\'o el ejercicio, para ejecutarlo se podr\'a hacerlo con el comando ``./ejercicio4A''.
+		
+		La aplicaci\'on escribe dentro de un archivo llamado ``output\_ejercicio4A'', en \'el cada proceso escribe un mensaje identific\'andose a s\'i mismo.
+		
+		El orden de finalizaci\'on de cada proceso es completamente aleatorio, ya que en el c\'odigo no se utiliza expl\'icitamente ninguna funci\'on para que un proceso espere a otro.
+		
+		\subsubsection{Algoritmo}
+		\begin{lstlisting}
+	Inicializar mutex en 1;
+	fork();
+	if(es_hijo) {
+		Escribir en el archivo la identidad del primer hijo
+	} else {
+		fork();
+		if(es_segundo_hijo)
+			Escribir en el archivo la identidad del segundo hijo
+		else
+			Escribir en el archivo la identidad del padre
+	}
+		\end{lstlisting}
+\subsection{Ejercicio 4B}
+		\subsubsection{Compilaci\'on}
+		
+		Se puede compilar este ejercicio en particular con el comando ``make ejercicio4B''.
+		
+		\subsubsection{Modo de uso}
+		
+		Dentro del directorio donde se compil\'o el ejercicio, para ejecutarlo se podr\'a hacerlo con el comando ``./ejercicio4A''.
+		
+		La aplicaci\'on escribe dentro de un archivo llamado ``output\_ejercicio4A'', en \'el cada proceso escribe un mensaje identific\'andose a s\'i mismo.
+		
+		El orden de finalizaci\'on de cada proceso es completamente aleatorio, ya que en el c\'odigo no se utiliza expl\'icitamente ninguna funci\'on para que un proceso espere a otro.
+		
+		\subsubsection{Algoritmo}
+		\begin{lstlisting}
+	Inicializar mutex en 1;
+	fork();
+	if(es_hijo) {
+		Escribir en el archivo la identidad del primer hijo
+	} else {
+		fork();
+		if(es_segundo_hijo)
+			Escribir en el archivo la identidad del segundo hijo
+		else
+			Escribir en el archivo la identidad del padre
+	}
+		\end{lstlisting}
+	
+\end{document}
