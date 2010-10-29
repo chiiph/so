@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
 	// Asignado para la escritura en el otro proceso
 	// (a este semaforo se le hara wait para leer, y al otro
 	// post para escribir)
-	full2 = ((sem_t *)mem)+sizeof(*full1)*2;
+	full2 = ((sem_t *)mem)+sizeof(*full1);
 	// Si creamos la memoria
 	if(created) {
 		// Entonces se inicializan los semaforos
@@ -97,12 +97,16 @@ int main(int argc, char** argv) {
 		// Se avisa que se "envio" el mensaje
 		printf("Enviado el mensaje con ID=%d por el PID=%d\n", id, getpid());
 		sleep(1);
+		// Avisamos que hay un mensaje nuevo
+		sem_post(full1);
+		// Esperamos que haya un mensaje en el buffer para nosotros
+		sem_wait(full2);
 		printf("Leyendo mensaje...\n");
 		// Se imprime el mensaje
 		printf("%s", message);
-		// Avisamos que hay un mensaje nuevo
-		sem_post(full1);
 		printf("***\n");
+		sem_post(full2);
+
 		sleep(1);
 	}
 

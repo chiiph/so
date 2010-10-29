@@ -35,8 +35,8 @@ int create_or_attach(key_t key, size_t size, int *created) {
 }
 
 int main(int argc, char** argv) {
-	key_t key_mutex = 4321;
-	key_t key_msg = 8765;
+	key_t key_mutex = 9928;
+	key_t key_msg = 8903;
 	int shmid_mutex, shmid_msg;
 	char *message;
 	sem_t *full, *empty;
@@ -44,10 +44,10 @@ int main(int argc, char** argv) {
 
 	printf("Inicializando los semaforos...\t\t\t");
 	fflush(stdout);
-	shmid_mutex = create_or_attach(key_mutex, sizeof(full)*2, &created);
+	shmid_mutex = create_or_attach(key_mutex, sizeof(*full)*2, &created);
 	void *mem = shmat(shmid_mutex, 0, 0);
 	full = ((sem_t *)mem);
-	empty = ((sem_t *)mem)+1;
+	empty = ((sem_t *)mem)+sizeof(full);
 	if(created) {
 		if(sem_init(full, 1, 0) == -1) {
 			printf("ERROR: No se puede inicializar el semaforo full\n");
