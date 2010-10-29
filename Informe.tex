@@ -199,17 +199,17 @@ void thread(letra) {
 		
 		Se puede compilar este ejercicio en particular con el comando ``make ejercicio6B''.
 		
-		Se generan los binarios: ejercicio6B y ejercicio6B_2.
+		Se generan los binarios: ejercicio6B y ejercicio6B\_2.
 		
 		\subsubsection{Modo de uso}
 		
-		Dentro del directorio donde se compil\'o el ejercicio, para ejecutarlo se podr\'a hacerlo con el comando ``./ejercicio6B'', y luego en otra instancia de la consola en mismo directorio ``./ejercicio6B_2''. No importa el orden en que se ejecuten, ejercicio6B escribe primero un mensaje y luego espera la respuesta, y ejercicio6B_2 primero lee un mensaje y luego escribe la respuesta. Este comportamiento se realiza infinitas veces.
+		Dentro del directorio donde se compil\'o el ejercicio, para ejecutarlo se podr\'a hacerlo con el comando ``./ejercicio6B'', y luego en otra instancia de la consola en mismo directorio ``./ejercicio6B\_2''. No importa el orden en que se ejecuten, ejercicio6B escribe primero un mensaje y luego espera la respuesta, y ejercicio6B\_2 primero lee un mensaje y luego escribe la respuesta. Este comportamiento se realiza infinitas veces.
 		
 		Para comprobar que el env\'io de mensajes se realiza correctamente estos poseen un id aleatorio para identificarlos. Por otro lado, para facilitar la lectura del output por pantalla, se realizan sleeps entre cada env\'io de mensaje.
 		
 		\subsubsection{Algoritmo}
 		
-		NOTA: Como ambos programas funcionan de la misma forma, simplemente se invierte el comportamiento inicial en el env\'io de mensajes, solo se presenta el algoritmo para ejercicio6B.c, y simplemente invirtiendo el orden en que se envia y reciben mensajes se puede obtener el algoritmo de ejercicio6B_2.
+		NOTA: Como ambos programas funcionan de la misma forma, simplemente se invierte el comportamiento inicial en el env\'io de mensajes, solo se presenta el algoritmo para ejercicio6B.c, y simplemente invirtiendo el orden en que se envia y reciben mensajes se puede obtener el algoritmo de ejercicio6B\_2.
 		
 		\begin{lstlisting}
 Se crea el segmento de memoria compartida para los semaforos utilizados o
@@ -226,6 +226,70 @@ while(1) {
 	Se envia el mensaje con el id aleatorio;
 	Se espera a que el otro proceso responda el mensaje;
 	Se lee la respuesta;
+}
+		\end{lstlisting}
+	\subsection{Ejercicio 6C}
+	\subsection{Ejercicio 6D}
+		\subsubsection{Compilaci\'on}
+		
+		Se puede compilar este ejercicio en particular con el comando ``make ejercicio6D''.
+		
+		Se generan los binarios: ejercicio6D1 y ejercicio6D2.
+		
+		\subsubsection{Modo de uso}
+		
+		Dentro del directorio donde se compil\'o el ejercicio, para ejecutarlo se podr\'a hacerlo con el comando ``./ejercicio6D1'', y luego en otra instancia de la consola en mismo directorio ``./ejercicio6D2''. No importa el orden en que se ejecuten, cada binario se encarga de la sincronizaci\'on completa.
+		
+		\subsubsection{Algoritmo}
+		\begin{lstlisting}
+		
+		\end{lstlisting}
+	\subsection{Ejercicio 6E1}
+		\subsubsection{Compilaci\'on}
+		
+		Se puede compilar este ejercicio en particular con el comando ``make ejercicio6E1''.
+		
+		Se generan los binarios: ejercicio6E1\_productor y ejercicio6E1\_consumidor.
+		
+		\subsubsection{Modo de uso}
+		
+		Dentro del directorio donde se compil\'o el ejercicio, para ejecutarlo se podr\'a hacerlo con el comando ``./ejercicio6E1\_productor'', y luego ``./ejercicio6E1\_consumidor''. El orden es indistinto, ya que la sincrionizaci\'on se encargar\'a de mantener el comportamiento de las aplicaciones consistente.
+		
+		NOTA: Dado que se utiliza memoria compartida, y el manejo del buffer de mensajes se realiza en forma de pila para facilitar el consumo de mensajes y la producci\'on.
+		
+		\subsubsection{Algoritmo}
+		\begin{lstlisting}
+productor() {
+	Se crea el segmento de memoria compartida para los semaforos utilizados o
+	se enlaza al mismo si ya esta creado;
+
+	Si fue creado, se inicializan los semaforos;
+
+	Se crea el segmento de memoria compartida para el buffer de mensajes o
+	se enlaza al mismo si ya esta creado;
+
+	while(1) {
+		id = numero random;
+		Se espera a que haya un lugar vacio para producir;
+		Se produce un mensaje con id aleatorio;
+		Se avisa que hay un nuevo mensaje producido;
+	}
+}
+
+consumidor() {
+	Se crea el segmento de memoria compartida para los semaforos utilizados o
+	se enlaza al mismo si ya esta creado;
+
+	Si fue creado, se inicializan los semaforos;
+
+	Se crea el segmento de memoria compartida para el buffer de mensajes o
+	se enlaza al mismo si ya esta creado;
+
+	while(1) {
+		Se espera a que haya un mensaje para consumir;
+		Se consume el mensaje;
+		Se avisa que esta ese lugar vacio;
+	}
 }
 		\end{lstlisting}
 \end{document}

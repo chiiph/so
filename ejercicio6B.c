@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
 	// Asignado para la escritura en el otro proceso
 	// (a este semaforo se le hara wait para leer, y al otro
 	// post para escribir)
-	full2 = ((sem_t *)mem)+sizeof(*full1)*2;
+	full2 = ((sem_t *)mem)+sizeof(*full1);
 	// Si creamos la memoria
 	if(created) {
 		// Entonces se inicializan los semaforos

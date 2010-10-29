@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
 	// post para escribir)
 	full1 = ((sem_t *)mem);
 	// Y el segundo el full2
-	full2 = ((sem_t *)mem)+sizeof(*full1)*2;
+	full2 = ((sem_t *)mem)+sizeof(*full1);
 	// Si creamos la memoria
 	if(created) {
 		// Entonces se inicializan los semaforos
