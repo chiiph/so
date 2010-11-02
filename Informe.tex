@@ -53,23 +53,79 @@ showstringspaces=false}
 	
 \section{Linux}
 	\subsection{Directorio /proc}
-	\subsection{Creaci\'on y manipulaci\'on de procesos}
+	
+	El sistema de archivos proc contiene una jerarqu\'ia de archivos que representan el estado actual del kernel y sus estructuras de datos.
+	Este tipo de sistema de archivos es denominado sistema de archivos virtual.
+	Dentro del directorio /proc se puede encontrar informaci\'on detallada del hardware del sistema y de los procesos que estan ejecutandose actualmente.
+	Este contenido no se guarda en ning\'un dispositivo fisico sino que se construye din\'amicamente cada vez que se solicita al kernel que lo muestre o cuando queremos visualizar el contenido de sus archivos o directorios. Es por esto que estos datos no existen una vez que el equipo se apaga.
+	
+	\subsection{Creaci\'on de procesos}
+	
+	\begin{enumerate}
+	\item fork()
+	
+	\begin{lstlisting}
+	pid_t fork(void);
+	\end{lstlisting}
+		
+	Crea un nuevo proceso duplicando el proceso invocador, referido como proceso padre. El nuevo proceso, referido como proceso hijo, es un duplicado exacto del proceso padre, exceptuando, entre otras, el process ID, el parent process ID, locks de memoria del padre, etc.
+	
+	\item clone()
+	
+	\begin{lstlisting}
+	int clone(int (*fn)(void *), void *child_stack, 
+	          int flags, void *arg, ...
+	          /* pid_t *ptid, struct user_desc *tls, pid_t *ctid */ );
+	\end{lstlisting}
+	
+	Crea un nuevo proceso, de manera similar a fork(). A diferencia de fork(), esta llamada permite al proceso hijo compartir parte de su contexto de ejecuci\'on con el proceso padre, como el espacio de memoria, tabla de descriptores de archivos y tabla de manejadores de señales.
+	
+	\end{enumerate}
+	
+	\subsection{Manipulaci\'on de procesos}
+	
+	\begin{enumerate}
+	\item signal()
+	\begin{lstlisting}
+	sighandler_t signal(int signum, sighandler_t handler);
+	\end{lstlisting}
+	
+	Establece la disposicion de la señal signum al controlador handler, que puede ser SIG\_IGN (ignora la señal), SIG\_DFL (realiza la accion default asociada con la señal), o la direccion de una funcion definida por el programador (un manejador de señales).
+	\end{enumerate}
+	
 	\subsection{System calls fork y exec}
+	
+	Las diferencia entre los system calls fork y exec es que la primera realiza lo explicado en el inciso anterior y la familia de funciones exec() reemplaza la imagen del proceso actual por una nueva imagen de proceso.
+	Hay una gran variedad de funciones exec:
+	\begin{lstlisting}
+	int execl(const char *path, const char *arg, ...);
+	int execlp(const char *file, const char *arg, ...);
+	int execle(const char *path, const char *arg, ..., char * const envp[]);
+	int execv(const char *path, char *const argv[]);
+	int execvp(const char *file, char *const argv[]);
+	\end{lstlisting}
+	El primer argumento de estas funciones es la ruta al archivo que va a ser cargado en memoria y ejecutado, el resto varia de funci\'on a funci\'on.
+	
 \chapter{Algoritmos}
 \section{Consideraciones iniciales}
 	
-	Todos los ejercicios se compilan con un mismo Makefile, para compilar alg\'un ejercicio en particular se deber\'an utilizar comandos del estilo ``make ejercicio4A'', como se especificar\'a en cada ejercicio particular.
+	Para compilar cada ejercicio se deber\'a ejecutar un comando dentro de la carpeta src de la forma:
 	
-	Para compilar todos los ejercicios se puede utilizar ``make all'' o simplemente ``make''.
+	\begin{lstlisting}
+	cd ejercicio4a; make
+	\end{lstlisting}
 	
-	Para ``limpiar'' el directorio se puede utilizar el comando ``make clean''.
+	siendo ``ejercicio4a'' el ejercicio en cuesti\'on.
+
+% 	
+% 	Todos los ejercicios se compilan con un mismo Makefile, para compilar alg\'un ejercicio en particular se deber\'an utilizar comandos del estilo ``make ejercicio4A'', como se especificar\'a en cada ejercicio particular.
+% 	
+% 	Para compilar todos los ejercicios se puede utilizar ``make all'' o simplemente ``make''.
+% 	
+% 	Para ``limpiar'' el directorio se puede utilizar el comando ``make clean''.
 	
 \section{Creaci\'on de procesos}
 	\subsection{Ejercicio 4A}
-		\subsubsection{Compilaci\'on}
-		
-		Se puede compilar este ejercicio en particular con el comando ``make ejercicio4A''.
-		
 		\subsubsection{Modo de uso}
 		
 		Dentro del directorio donde se compil\'o el ejercicio, para ejecutarlo se podr\'a hacerlo con el comando ``./ejercicio4A''.
@@ -93,10 +149,6 @@ if(es_hijo) {
 }
 		\end{lstlisting}
 \subsection{Ejercicio 4B}
-		\subsubsection{Compilaci\'on}
-		
-		Se puede compilar este ejercicio en particular con el comando ``make ejercicio4B''.
-		
 		\subsubsection{Modo de uso}
 		
 		Dentro del directorio donde se compil\'o el ejercicio, para ejecutarlo se podr\'a hacerlo con el comando ``./ejercicio4B''.
@@ -105,17 +157,19 @@ if(es_hijo) {
 		
 		\subsubsection{Algoritmo}
 		\begin{lstlisting}
-		
+Proceso
+Crear los threads
+Escribir en la consola que es el padre
+Esperar que terminen los hilos
+
+Hilos
+Escribir en la consola que numero de hijo es
 		\end{lstlisting}
 		
 	\subsection{Ejercicio 4C}
-		\subsubsection{Compilaci\'on}
-		
-		Se puede compilar este ejercicio en particular con el comando ``make ejercicio4C''. 
-		
-		En este caso no solo se genera un ejecutable llamado ejercicio4C, sino que tambi\'en se genera uno llamado ``job4c'' que ser\'a utilizado por el primero y no deber\'a ser llamado expl\'icitamente.
-		
 		\subsubsection{Modo de uso}
+		
+		En este ejercicio el Makefile no solo se genera un ejecutable llamado ejercicio4C, sino que tambi\'en se genera uno llamado ``job4c'' que ser\'a utilizado por el primero y no deber\'a ser llamado expl\'icitamente.
 		
 		Dentro del directorio donde se compil\'o el ejercicio, para ejecutarlo se podr\'a hacerlo con el comando ``./ejercicio4C''.
 		
@@ -125,18 +179,35 @@ if(es_hijo) {
 		
 		\subsubsection{Algoritmo}
 		\begin{lstlisting}
-	
+Crear el archivo "salida.txt" o eliminar su contenido
+Crear la memoria compartida
+Asignar el espacio de memoria al semaforo
+Inicializar el semaforo en 1
+for(i=0 hasta i=2){
+   Creo un hijo
+   if (es_el_hijo){
+      Reemplazo la imagen ejecutable actual por la de job4c
+   }
+}
+Esperar a que terminen los hijos
+Abrir el archivo para escritura sin borrar el contenido
+Escribir en el mismo que se finalizo la actividad
+
+job4c
+Acceder al espacio de memoria compartida
+Asignar el espacio de memoria al mutex
+for(i=0 hasta i=9999){
+   Esperar el semaforo compartido
+   Escribir en el archivo y en la consola
+   Liberar el semaforo compartido
+}
 		\end{lstlisting}
 	\subsection{Ejercicio 5A}
-		\subsubsection{Compilaci\'on}
-		
-		Se puede compilar este ejercicio en particular con el comando ``make ejercicio5A''.
-		
-		ACLARACI\'ON: Como ya se charl\'o con ayudantes de la c\'atedra, si bien el c\'odigo imprime 10000 lineas con cada letra, como se especifica, por alguna raz\'on que el personal de c\'atedra tampoco supo responder, algunas letras se imprimen un n\'umero arbitrario m\'as de veces.
-		
 		\subsubsection{Modo de uso}
 		
 		Dentro del directorio donde se compil\'o el ejercicio, para ejecutarlo se podr\'a hacerlo con el comando ``./ejercicio5A''.
+		
+		ACLARACI\'ON: Como ya se habl\'o con ayudantes de la c\'atedra, si bien el c\'odigo cicla 10000 veces imprimiendo cada letra, como se especifica en el enunciado, por alguna raz\'on cuya respuesta no se encontr\'o, algunas letras se imprimen un n\'umero arbitrario m\'as de veces.
 		
 		\subsubsection{Algoritmo}
 		\begin{lstlisting}
@@ -154,19 +225,77 @@ void thread(letra) {
 }
 		\end{lstlisting}
 	\subsection{Ejercicio 5B}
-		\subsubsection{Compilaci\'on}
-		
-		Se puede compilar este ejercicio en particular con el comando ``make ejercicio5B''.
-		
-		Se generan los binarios: ejercicio5B1, ejercicio5B2, ejercicio5B3, que corresponden a cada inciso del ejercicio.
-		
 		\subsubsection{Modo de uso}
+		
+		En este ejercicio, el Makefile genera los siguientes binarios: ejercicio5B1, ejercicio5B2, ejercicio5B3, que corresponden a cada inciso del ejercicio.
 		
 		Dentro del directorio donde se compil\'o el ejercicio, para ejecutarlo se podr\'a hacerlo con el comando ``./ejercicio5B1'', o ``./ejercicio5B2'', ``./ejercicio5B3''.
 		
 		\subsubsection{Algoritmo}
+		
+		Inciso 1:
+		
 		\begin{lstlisting}
+Proceso
+Definir un arreglo de 5 semaforos {A,B,C,D,E} tratada como cola circular
+Inicializar los semaforos de la siguiente manera A=1, B=0, C=0, D=0, E=0
+Crear los 5 hilos asignandoles la misma funcion
 
+
+Hilos
+for(){
+   Esperar mi semaforo
+   Imprimir mi letra
+   LIbera el semaforo siguiente
+}
+		\end{lstlisting}
+		
+		Inciso 2:
+		
+		\begin{lstlisting}
+/* Se utiliza una variable que define el turno en el que se encuentra la
+   secuencia.
+   turno = 1 -> Tengo que imprimir 2 veces (B o C)
+   turno = 0 -> (B o C) ya se imprimio una vez, tengo que imprimirla una
+                vez mas y continuar con la secuencia normalmente */
+Proceso
+Definir un arreglo de 4 semaforos {A,B,D,E} tratada como cola circular
+Inicializar los semaforos de la siguiente manera A=1, B=0, D=0, E=0
+Crear los 5 hilos asignandoles la misma funcion
+
+
+Hilos
+/* B y C comparten semaforo ya que compiten por imprimir */
+for(){
+   Esperar mi semaforo
+   Imprimir mi letra
+   Dependiendo del turno en el que me encuentre liberar el semaforo
+}
+		\end{lstlisting}
+		
+		Inciso 3:
+		
+		\begin{lstlisting}
+/* Se utilizan 2 variables que definen el turno en el que se encuentra la
+   secuencia. Dadas las 3 condiciones que se pueden dar
+   (turno, turnoD)
+   (0, 0) -> El proximo turno no es de D, ni hay que imprimir 2 veces (A o B)
+   (0, 1) -> El proximo turno no es de D, pero si hay que imprimir 2 veces (A o B)
+   (1, 1) -> El proximo turno es de D, pero tengo que imprimir una vez mas (A o B) */
+
+Proceso
+Definir un arreglo de 4 semaforos {A,C,D,E} tratada como cola circular
+Inicializar los semaforos de la siguiente manera A=1, C=0, D=0, E=0
+Crear los 5 hilos asignandoles la misma funcion
+
+
+Hilos
+/* A y B comparten semaforo ya que compiten por imprimir */
+for(){
+   Esperar mi semaforo
+   Imprimir mi letra
+   Dependiendo del turno en el que me encuentre liberar el semaforo
+}
 		\end{lstlisting}
 	\subsection{Ejercicio 6A}
 		
@@ -195,13 +324,9 @@ void thread(letra) {
 			Desenlaza el segmento de memoria compartida ubicado en la direcci\'on especificada en el par\'ametro shmaddr.
 		
 	\subsection{Ejercicio 6B}
-		\subsubsection{Compilaci\'on}
-		
-		Se puede compilar este ejercicio en particular con el comando ``make ejercicio6B''.
-		
-		Se generan los binarios: ejercicio6B y ejercicio6B\_2.
-		
 		\subsubsection{Modo de uso}
+		
+		En este ejercicio, el Makefile genera los siguientes binarios: ejercicio6B y ejercicio6B\_2.
 		
 		Dentro del directorio donde se compil\'o el ejercicio, para ejecutarlo se podr\'a hacerlo con el comando ``./ejercicio6B'', y luego en otra instancia de la consola en mismo directorio ``./ejercicio6B\_2''. No importa el orden en que se ejecuten, ejercicio6B escribe primero un mensaje y luego espera la respuesta, y ejercicio6B\_2 primero lee un mensaje y luego escribe la respuesta. Este comportamiento se realiza infinitas veces.
 		
@@ -229,29 +354,56 @@ while(1) {
 }
 		\end{lstlisting}
 	\subsection{Ejercicio 6C}
+	
+	\subsubsection{msgget}
+			
+			\begin{lstlisting}
+			int msgget(key_t key, int msgflg);
+			\end{lstlisting}
+			
+			Este system call devuelve el identificador de la cola de mensajes asociado al argumento key. Una nueva cola de mensajes se crea si key tiene el valor IPC\_PRIVATE o key no es IPC\_PRIVATE, no existe una cola de mensajes con llave key e IPC\_CREAT es especificado en msgflag.
+			
+	\subsubsection{msgsnd}
+			
+			\begin{lstlisting}
+			int msgsnd(int msqid, const void *msgp, size_t msgsz, int msgflg);
+			\end{lstlisting}
+			
+			Este system call se utiliza para enviar un mensaje a la cola de mensajes. El proceso invocador tiene que tener permisos de escritura en la cola de mensajes para poder enviarlo. Este anexa una copia del mensaje apuntado por msgp a la cola identificada por msqid.
+			
+	\subsubsection{msgrcv}
+			
+			\begin{lstlisting}
+			ssize_t msgrcv(int msqid, void *msgp, size_t msgsz, long msgtyp, int msgflg);
+			\end{lstlisting}
+			
+			Este system call se utiliza para leer mensajes de la cola de mensajes. El proceso invocador tiene que tener permisos de lectura en la cola de mensajes para poder leerlo. Este anexa el mensaje al buffer msgp el mensaje leido de la cola de mensajes identificada por msqid. El argumento msgtyp especifica el tipo de mensaje que se lee.
+
 	\subsection{Ejercicio 6D}
-		\subsubsection{Compilaci\'on}
-		
-		Se puede compilar este ejercicio en particular con el comando ``make ejercicio6D''.
-		
-		Se generan los binarios: ejercicio6D1 y ejercicio6D2.
-		
 		\subsubsection{Modo de uso}
+		
+		Binarios generados por el Makefile: ejercicio6D1 y ejercicio6D2.
 		
 		Dentro del directorio donde se compil\'o el ejercicio, para ejecutarlo se podr\'a hacerlo con el comando ``./ejercicio6D1'', y luego en otra instancia de la consola en mismo directorio ``./ejercicio6D2''. No importa el orden en que se ejecuten, cada binario se encarga de la sincronizaci\'on completa.
 		
 		\subsubsection{Algoritmo}
 		\begin{lstlisting}
-		
+ejercicio6D1
+Intentar crear o acceder a la cola de mensajes
+Enviar un mensaje
+Esperar a recibir una respuesta
+Mostrar la respuesta recibida
+
+ejercicio6D2
+Intentar crear o acceder a la cola de mensajes
+Esperar a recibir un mensaje
+Mostrar el mensaje recibido
+Enviar un mensaje de respuesta
 		\end{lstlisting}
 	\subsection{Ejercicio 6E1}
-		\subsubsection{Compilaci\'on}
-		
-		Se puede compilar este ejercicio en particular con el comando ``make ejercicio6E1''.
-		
-		Se generan los binarios: ejercicio6E1\_productor y ejercicio6E1\_consumidor.
-		
 		\subsubsection{Modo de uso}
+		
+		Binarios generados por el Makefile: ejercicio6E1\_productor y ejercicio6E1\_consumidor.
 		
 		Dentro del directorio donde se compil\'o el ejercicio, para ejecutarlo se podr\'a hacerlo con el comando ``./ejercicio6E1\_productor'', y luego ``./ejercicio6E1\_consumidor''. El orden es indistinto, ya que la sincrionizaci\'on se encargar\'a de mantener el comportamiento de las aplicaciones consistente.
 		
@@ -290,6 +442,40 @@ consumidor() {
 		Se consume el mensaje;
 		Se avisa que esta ese lugar vacio;
 	}
+}
+		\end{lstlisting}
+	\subsection{Ejercicio 6E1}
+		\subsubsection{Modo de uso}
+		
+		Binarios generados por el Makefile: ejercicio6E2\_productor y ejercicio6E2\_consumidor.
+		
+		Dentro del directorio donde se compil\'o el ejercicio, para ejecutarlo se podr\'a hacerlo con el comando ``./ejercicio6E2\_productor'', y luego ``./ejercicio6E2\_consumidor''. El orden es indistinto, ya que la sincrionizaci\'on se encargar\'a de mantener el comportamiento de las aplicaciones consistente.
+		
+		NOTA: Dado que se utiliza una cola de mensajes, y el manejo del buffer de mensajes se realiza en forma de cola para facilitar el consumo de mensajes y la producci\'on aprovechando las herramientas que provee la librer\'ia standard de C.
+		
+		\begin{lstlisting}
+Ambos programas intentan crear o acceder a una cola de mensajes compartida
+y a un espacio de memoria compartido para los semaforos.
+La cola de mensajes se supone circular, es decir, el productor produce los
+mensajes en 1,2,... BUFFSIZE,1,2,... y el consumidor consume los mensajes en ese
+mismo orden.
+
+ejercicio6E2_productor
+Enviar un mensaje que confirme la inicializacion
+for(){
+   Esperar el semaforo que indica cuanto espacio libre hay en la cola de mensajes
+   Produzco un mensaje
+   Aumento el semaforo que representa cuantos mensajes hay en la cola de mensajes
+   Aumento el indice de escritura en 1 y calculando este valor modulo BUFFSIZE  + 1 (para evitar el 0)
+}
+
+ejercicio6E2_consumidor
+Esperar un mensaje que confirme la inicializacion
+for(){
+   Esperar el semaforo que indica cuantos mensajes hay en la cola de mensajes
+   Consumo el mensaje
+   Aumento el semaforo que representa cuanto espacio libre hay en la cola de mensajes
+   Aumento el indice de lectura en 1 y calculando este valor modulo BUFFSIZE + 1 (para evitar el 0)
 }
 		\end{lstlisting}
 \end{document}
