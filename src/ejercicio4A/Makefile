@@ -8,3 +8,4 @@ ejercicio4A: ejercicio4A.c
 
 clean:
 	rm -rf ejercicio4A
+	rm -rf output_*
