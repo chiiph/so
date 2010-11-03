@@ -132,7 +132,7 @@ showstringspaces=false}
 		
 		La aplicaci\'on escribe dentro de un archivo llamado ``output\_ejercicio4A'', en \'el cada proceso escribe un mensaje identific\'andose a s\'i mismo.
 		
-		El orden de finalizaci\'on de cada proceso es completamente aleatorio, ya que en el c\'odigo no se utiliza expl\'icitamente ninguna funci\'on para que un proceso espere a otro.
+		El orden de finalizaci\'on de cada proceso es completamente aleatorio (dependiente del scheduler y del resto de los procesos que se encuentran ejecut\'andose en ese momento), ya que en el c\'odigo no se utiliza expl\'icitamente ninguna funci\'on para que un proceso espere a otro.
 		
 		\subsubsection{Algoritmo}
 		\begin{lstlisting}
@@ -153,7 +153,7 @@ if(es_hijo) {
 		
 		Dentro del directorio donde se compil\'o el ejercicio, para ejecutarlo se podr\'a hacerlo con el comando ``./ejercicio4B''.
 		
-		El orden de finalizaci\'on de cada proceso es completamente aleatorio, ya que en el c\'odigo no se utiliza expl\'icitamente ninguna funci\'on para que un proceso espere a otro.
+		El orden de finalizaci\'on de cada hilo es completamente aleatorio (dependiente del scheduler y del resto de los procesos que se encuentran ejecut\'andose en ese momento), el proceso padre va a finalizar luego de los hilos ya que expl\'icitamente  el padre espera a que terminen.
 		
 		\subsubsection{Algoritmo}
 		\begin{lstlisting}
@@ -330,7 +330,7 @@ for(){
 		
 		Dentro del directorio donde se compil\'o el ejercicio, para ejecutarlo se podr\'a hacerlo con el comando ``./ejercicio6B'', y luego en otra instancia de la consola en mismo directorio ``./ejercicio6B\_2''. No importa el orden en que se ejecuten, ejercicio6B escribe primero un mensaje y luego espera la respuesta, y ejercicio6B\_2 primero lee un mensaje y luego escribe la respuesta. Este comportamiento se realiza infinitas veces.
 		
-		Para comprobar que el env\'io de mensajes se realiza correctamente estos poseen un id aleatorio para identificarlos. Por otro lado, para facilitar la lectura del output por pantalla, se realizan sleeps entre cada env\'io de mensaje.
+		Para comprobar que el env\'io de mensajes se realiza correctamente estos poseen un id aleatorio para identificarlos.
 		
 		\subsubsection{Algoritmo}
 		
@@ -345,13 +345,11 @@ Si fue creado, se inicializan los semaforos;
 Se crea el segmento de memoria compartida para el buffer de mensajes o
 se enlaza al mismo si ya esta creado;
 
-while(1) {
-	id = numero random;
-	Se espera a que el otro proceso haya leido el mensaje enviado;
-	Se envia el mensaje con el id aleatorio;
-	Se espera a que el otro proceso responda el mensaje;
-	Se lee la respuesta;
-}
+id = numero random;
+Se espera a que el otro proceso haya leido el mensaje enviado;
+Se envia el mensaje con el id aleatorio;
+Se espera a que el otro proceso responda el mensaje;
+Se lee la respuesta;
 		\end{lstlisting}
 	\subsection{Ejercicio 6C}
 	
@@ -444,7 +442,7 @@ consumidor() {
 	}
 }
 		\end{lstlisting}
-	\subsection{Ejercicio 6E1}
+	\subsection{Ejercicio 6E2}
 		\subsubsection{Modo de uso}
 		
 		Binarios generados por el Makefile: ejercicio6E2\_productor y ejercicio6E2\_consumidor.
