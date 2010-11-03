@@ -10,3 +10,4 @@ ejercicio4C: ejercicio4C.c job4c.c
 clean:
 	rm -rf ejercicio4C
 	rm -rf salida*
+	rm -rf job4c
