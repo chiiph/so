@@ -12,7 +12,7 @@
  * dos veces */
 sem_t sem[4];
 char ids[5] = "ABCDE";
-int turno = 2;
+int turno = 1;
 
 /* Imprime una letra correspondiente al arreglo "ids" dado el
  * entrero que se le pasa por parametro */
@@ -49,38 +49,23 @@ void *printid(void *id) {
        * Si es el hilo B o C... */
       if (i == 1) {
          
-         /* ... y el turno esta en 2... */
-         if (turno == 2) {
+         /* ... y el turno esta en 1... */
+         if (turno == 1) {
             
             /* ... significa que tengo que imprimir nuevamente (B o C).
-             * Pongo el turno en 1, indicando que solo tiene que imprimir
-             * una vez mas (B o C) */
-            turno = 1;
+             * Pongo el turno en 0, indicando que el proximo turno la
+             * secuencia seguira normalmente */
+            turno = 0;
             sem_post(&(sem[i]));
          }
+         /* ... y el turno esta en 0... */
          else {
-
-            /* ... y el turno esta en 1... */
-            if (turno == 1) {
-   
-               /* ... significa que acabo de imprimir el segundo (B o C).
-                * Por lo tanto la proxima iteracion se debera imprimir una
-                * sola  vez (B o C).
-                * Pongo el turno en 0 y levanto el semaforo de D */
-               turno = 0;
-               sem_post(&(sem[(i+1)%4]));        
-            }
-
-            /* ... y el turno esta en 0... */
-            else {
-              
-               /* ... significa que esta iteracion se imprimio una sola vez
-                * (B o C) por lo tanto debo volver el turno a 2 para que se
-                * repita el ciclo completo.
-                * Luego levanto el semaforo de D para que todo continue */
-               turno = 2;
-               sem_post(&(sem[(i+1)%4]));
-            }
+           
+            /* ... significa que esta iteracion se imprimio por segunda vez
+             * (B o C), por lo que la proxima vuelta debera imprimirse 2
+             * veces. Por lo tanto vuelvo el turno a 1 */
+             turno = 1;
+             sem_post(&(sem[(i+1)%4]));
          }
       }
       /* si no es (B o C) entonces levanto el semaforo siguiente al actual */
