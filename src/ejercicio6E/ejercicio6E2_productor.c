@@ -76,7 +76,7 @@ int main(){
 
    i=1;
    msg.mtype = BUFFSIZE+1;
-   sprintf(msg.mtext, "%d", msg.mtype);
+   sprintf(msg.mtext, "%ld", msg.mtype);
 
    stat = msgsnd(msqid, &msg, sizeof(msg) - sizeof(long), 0);
    if (stat < 0){

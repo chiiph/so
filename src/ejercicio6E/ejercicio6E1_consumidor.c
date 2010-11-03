@@ -71,7 +71,7 @@ int main(int argc, char** argv) {
 	while(1) {
 		sem_wait(full);
 		sem_getvalue(full, &index);
-		printf("Leyendo mensaje...\n");
+		printf("Consumiendo mensaje...\n");
 		printf("%s", message+(index*MAXLEN));
 		sem_post(empty);
 		printf("***\n");
