@@ -84,24 +84,26 @@ int main(int argc, char** argv) {
 
 	int id;
 
-	while(1) {
-		// Seteamos un id random del mensaje
-		id = random() % 100;
-		// Comienza esperando un mensaje
-		sem_wait(full1);
-		printf("Leyendo mensaje...\n");
-		// Se imprime el mensaje
-		printf("%s", message);
-		sleep(1);
-		// Se escribe el nuevo mensaje
-		sprintf(message, "(%d) Mensaje enviado por PID=%d\n", id, getpid());
-		// Se avisa que se "envio" el mensaje
-		printf("Enviado el mensaje con ID=%d por el PID=%d\n", id, getpid());
-		// Se avisa que hay un lugar vacio nuevo
-		sem_post(full2);
-		printf("***\n");
-		sleep(1);
-	}
+	// Seteamos un id random del mensaje
+	id = random() % 100;
+	// Comienza esperando un mensaje
+	sem_wait(full1);
+	printf("Leyendo mensaje...\n");
+	// Se imprime el mensaje
+	printf("%s", message);
+	sleep(1);
+	// Se escribe el nuevo mensaje
+	sprintf(message, "(%d) Mensaje enviado por PID=%d\n", id, getpid());
+	// Se avisa que se "envio" el mensaje
+	printf("Enviado el mensaje con ID=%d por el PID=%d\n", id, getpid());
+	// Se avisa que hay un lugar vacio nuevo
+	sem_post(full2);
+	sleep(1);
+
+	// Se marcan ambos segmentos para que se borren cuando
+	// el ultimo proceso de dettachea
+	shmctl(shmid_msg, IPC_RMID, 0);
+	shmctl(shmid_mutex, IPC_RMID, 0);
 
 	return 0;
 }

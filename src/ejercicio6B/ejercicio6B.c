@@ -87,28 +87,29 @@ int main(int argc, char** argv) {
 
 	srand(time(0));
 
-	while(1) {
-		// Seteamos un id random del mensaje
-		id = random() % 100;
-		// Esperamos que haya algun lugar vacio
-		sem_wait(full2);
-		// Se guarda el mensaje nuevo en la shmem
-		sprintf(message, "(%d) Mensaje enviado por PID=%d\n", id, getpid());
-		// Se avisa que se "envio" el mensaje
-		printf("Enviado el mensaje con ID=%d por el PID=%d\n", id, getpid());
-		sleep(1);
-		// Avisamos que hay un mensaje nuevo
-		sem_post(full1);
-		// Esperamos que haya un mensaje en el buffer para nosotros
-		sem_wait(full2);
-		printf("Leyendo mensaje...\n");
-		// Se imprime el mensaje
-		printf("%s", message);
-		printf("***\n");
-		sem_post(full2);
+	// Seteamos un id random del mensaje
+	id = random() % 100;
+	// Esperamos que haya algun lugar vacio
+	sem_wait(full2);
+	// Se guarda el mensaje nuevo en la shmem
+	sprintf(message, "(%d) Mensaje enviado por PID=%d\n", id, getpid());
+	// Se avisa que se "envio" el mensaje
+	printf("Enviado el mensaje con ID=%d por el PID=%d\n", id, getpid());
+	sleep(1);
+	// Avisamos que hay un mensaje nuevo
+	sem_post(full1);
+	// Esperamos que haya un mensaje en el buffer para nosotros
+	sem_wait(full2);
+	printf("Leyendo mensaje...\n");
+	// Se imprime el mensaje
+	printf("%s", message);
+	sem_post(full2);
 
-		sleep(1);
-	}
+  sleep(1);
 
+	// Se marcan ambos segmentos para que se borren cuando
+	// el ultimo proceso de dettachea
+	shmctl(shmid_msg, IPC_RMID, 0);
+	shmctl(shmid_mutex, IPC_RMID, 0);
 	return 0;
 }
